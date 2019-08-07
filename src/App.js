@@ -1,18 +1,25 @@
-import React, { useState, useEffect } from "react";
-import "./app.css";
+import React, { useState, useLayoutEffect, useRef } from "react";
+import "./App.css";
 import { CheckMark, Close } from "./icons";
 
 function App() {
   const [progress, setProgress] = useState(0);
+  const articleRef = useRef();
 
-  useEffect(() => {
-    const handleScroll = () => {
-      setProgress(window.scrollY / (3000 - window.innerHeight));
+  useLayoutEffect(() => {
+    const updateHeight = () => {
+      if (!articleRef.current) return;
+
+      const { height } = articleRef.current.getBoundingClientRect();
+
+      setProgress(window.scrollY / (height - window.innerHeight));
     };
 
-    window.addEventListener("scroll", handleScroll);
+    updateHeight();
+
+    window.addEventListener("scroll", updateHeight);
     return () => {
-      window.removeEventListener("scroll", handleScroll);
+      window.removeEventListener("scroll", updateHeight);
     };
   }, [progress]);
 
@@ -20,54 +27,54 @@ function App() {
   const complete = position === 0;
   const notMoved = position === 1;
 
+  // Radius is derived from our desired strokeWidth
+  // If radius is exactly half diameter then the stroke will sit right on the edge and expand in both directions
+  // We want it to sit on the inside so we need to do some offset. So half the stroke width we need to subtract from the radius
+  // If we wanted it on the outside we could add the stroke width but then you'll need to adjust your circle size to be that much larger
+  const DIAMETER = 50;
+  const STROKE_WIDTH = 3;
+  const RADIUS = DIAMETER / 2 - STROKE_WIDTH / 2;
+  const circumference = Math.PI * 22 * 2;
+
   return (
-    <div
-      className="App"
-      style={{
-        height: "3000px",
-        background: "linear-gradient(to bottom, #1e5799 0%,#7db9e8 100%)",
-      }}
-    >
-      <div
-        style={{
-          position: "fixed",
-          top: "30px",
-          right: "30px",
-        }}
-      >
+    <div className="App">
+      <div className="article" ref={articleRef}>
         <div
           style={{
-            backgroundColor: complete ? "tomato" : "#FFF",
-            position: "relative",
-            width: "100px",
-            height: "100px",
-            borderRadius: "50px",
-            transition: "all .3s ease",
+            position: "fixed",
+            top: "30px",
+            right: "30px"
           }}
         >
-          {complete ? <CheckMark /> : <Close />}
-          {!notMoved && (
-            <svg
-              viewBox="0 0 50 50"
-              width="100px"
-              height="100px"
-              style={{
-                position: "absolute",
-                left: 0,
-                top: 0,
-              }}
-            >
-              <circle
-                cx={25}
-                cy={25}
-                r={22}
-                stroke="tomato"
-                fill="transparent"
-                strokeWidth="5"
-                style={{ strokeDasharray: "137.4", strokeDashoffset: 137.4 * position }}
-              />
-            </svg>
-          )}
+          <button
+            className="button"
+            style={{
+              backgroundColor: complete ? "tomato" : "#FFF"
+            }}
+          >
+            {complete ? <CheckMark /> : <Close />}
+            {!notMoved && (
+              <svg
+                viewBox="0 0 50 50"
+                width="100px"
+                height="100px"
+                className="circle-progress"
+              >
+                <circle
+                  cx={DIAMETER / 2}
+                  cy={DIAMETER / 2}
+                  r={RADIUS}
+                  stroke="tomato"
+                  fill="transparent"
+                  strokeWidth={STROKE_WIDTH}
+                  style={{
+                    strokeDasharray: circumference,
+                    strokeDashoffset: circumference * position
+                  }}
+                />
+              </svg>
+            )}
+          </button>
         </div>
       </div>
     </div>

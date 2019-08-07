@@ -2,3 +2,33 @@ body {
   margin: 0;
   padding: 0;
 }
+
+.center-icon {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+}
+
+.article {
+  height: 3000px;
+  background: linear-gradient(to bottom, #1e5799 0%, #7db9e8 100%);
+}
+
+.button {
+  position: relative;
+  width: 100px;
+  height: 100px;
+  border-radius: 50px;
+  transition: all 0.3s ease;
+  box-shadow: 0 2px 4px 0 rgba(0, 0, 0, 0.2);
+  outline: none;
+  cursor: pointer;
+  border: 0;
+}
+
+.circle-progress {
+  position: absolute;
+  left: 0;
+  top: 0;
+}
