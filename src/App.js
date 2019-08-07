@@ -21,7 +21,7 @@ function App() {
     return () => {
       window.removeEventListener("scroll", updateHeight);
     };
-  }, [progress]);
+  }, []);
 
   const position = Math.max(1 - progress, 0);
   const complete = position === 0;
@@ -32,9 +32,9 @@ function App() {
   // We want it to sit on the inside so we need to do some offset. So half the stroke width we need to subtract from the radius
   // If we wanted it on the outside we could add the stroke width but then you'll need to adjust your circle size to be that much larger
   const DIAMETER = 50;
-  const STROKE_WIDTH = 3;
+  const STROKE_WIDTH = 6;
   const RADIUS = DIAMETER / 2 - STROKE_WIDTH / 2;
-  const circumference = Math.PI * 22 * 2;
+  const CIRCUMFERENCE = Math.PI * RADIUS * 2;
 
   return (
     <div className="App">
@@ -68,8 +68,8 @@ function App() {
                   fill="transparent"
                   strokeWidth={STROKE_WIDTH}
                   style={{
-                    strokeDasharray: circumference,
-                    strokeDashoffset: circumference * position
+                    strokeDasharray: CIRCUMFERENCE,
+                    strokeDashoffset: CIRCUMFERENCE * position
                   }}
                 />
               </svg>
